@@ -15,10 +15,10 @@ def create_app(test_config=None):
         # Load the instance config, if it exists, when not testing
         app.config.from_pyfile('config.py', silent=True)
     else:
-        #Load the test config if passed in
+        # Load the test config if passed in
         app.config.from_mapping(test_config)
 
-    #ensure the instance folder exists
+    # ensure the instance folder exists
     try:
         os.makedirs(app.instance_path)
     except OSError:
@@ -28,5 +28,11 @@ def create_app(test_config=None):
     @app.route('/hello')
     def hello():
         return 'Hello, World!'
+
+    from . import db
+    db.init_app(app)
+
+    from . import auth
+    app.register_blueprint(auth.bp)
 
     return app
